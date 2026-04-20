@@ -69,10 +69,7 @@ function Home({ session }) {
     if (!activeTimeIn) return
 
     const now = new Date()
-
-    // find last Time In log from logs array
-    const lastTimeIn = logs.find(log => log.type === "IN")
-    const savedTimeIn = lastTimeIn ? new Date(lastTimeIn.time) : new Date(activeTimeIn)
+    const savedTimeIn = new Date(activeTimeIn) // from active_sessions, accurate ISO timestamp
     const hours = ((now - savedTimeIn) / (1000 * 60 * 60)).toFixed(2)
 
     await supabase
