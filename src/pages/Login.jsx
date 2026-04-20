@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { supabase } from '../lib/supabase'
+import { Link } from 'react-router-dom'
 
 function Login() {
   const [email, setEmail] = useState("")
@@ -7,24 +8,11 @@ function Login() {
   const [error, setError] = useState("")
   const [loading, setLoading] = useState(false)
 
-  const handleLogin = async (e) => {
-    e.preventDefault()
+  const handleLogin = async () => {
     setLoading(true)
     setError("")
-
     const { error } = await supabase.auth.signInWithPassword({ email, password })
     if (error) setError(error.message)
-    setLoading(false)
-  }
-
-  const handleSignUp = async (e) => {
-    e.preventDefault()
-    setLoading(true)
-    setError("")
-
-    const { error } = await supabase.auth.signUp({ email, password })
-    if (error) setError(error.message)
-    else setError("Check your email to confirm your account!")
     setLoading(false)
   }
 
@@ -36,12 +24,13 @@ function Login() {
         <p className="text-slate-400 text-sm mb-8">Sign in to your account</p>
 
         {error && (
-          <div className="mb-4 text-sm text-amber-400 bg-amber-500/10 border border-amber-500/20 p-3 rounded-lg">
+          <div className="mb-4 text-sm text-red-400 bg-red-500/10 border border-red-500/20 p-3 rounded-lg">
             {error}
           </div>
         )}
 
         <div className="space-y-4">
+
           <div>
             <label className="text-sm text-slate-400 mb-1 block">Email</label>
             <input
@@ -72,15 +61,14 @@ function Login() {
             {loading ? "Signing in..." : "Sign In"}
           </button>
 
-          <button
-            onClick={handleSignUp}
-            disabled={loading}
-            className="w-full bg-slate-700 hover:bg-slate-600 transition py-2 rounded-lg text-sm font-semibold disabled:opacity-50"
-          >
-            {loading ? "Creating account..." : "Create Account"}
-          </button>
-        </div>
+          <p className="text-center text-sm text-slate-400">
+            Don't have an account?{" "}
+            <Link to="/register" className="text-blue-400 hover:text-blue-300 transition">
+              Create Account
+            </Link>
+          </p>
 
+        </div>
       </div>
     </div>
   )

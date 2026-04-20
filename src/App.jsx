@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './lib/supabase'
 import Home from './pages/Home'
 import Login from './pages/Login'
+import Register from './pages/Register'
 
 function App() {
   const [session, setSession] = useState(null)
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={session ? <Home session={session} /> : <Navigate to="/login" />} />
         <Route path="/login" element={!session ? <Login /> : <Navigate to="/" />} />
+        <Route path="/register" element={!session ? <Register /> : <Navigate to="/" />} />
       </Routes>
     </BrowserRouter>
   )

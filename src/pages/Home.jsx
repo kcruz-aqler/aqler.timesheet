@@ -30,7 +30,7 @@ function Home({ session }) {
     timerRef.current = setTimeout(() => setAlertMessage(""), 10000)
   }
 
-  const timeIn = async () => {
+  const timeIn = async () => {  
     if (activeTimeIn) {
       showAlert("You are already timed in!")
       return
@@ -71,7 +71,7 @@ function Home({ session }) {
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
       <Navbar user={user} onSignOut={handleSignOut} />
       <div className="p-8">
-        <h1 className="text-4xl font-bold mb-6">Welcome back, {user.email}!</h1>
+        <h1 className="text-4xl font-bold mb-6">Welcome back, {user.user_metadata?.full_name.split(' ')[0]}!</h1>
         <p className="text-lg text-slate-300 mb-8">Here's a quick overview of your timesheet activities.</p>
         <AlertMessage message={alertMessage} />
         <TimeButtons onTimeIn={timeIn} onTimeOut={timeOut} onRequestOvertime={requestOvertime} activeTimeIn={activeTimeIn} />
