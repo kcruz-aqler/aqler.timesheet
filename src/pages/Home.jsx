@@ -72,7 +72,7 @@ function Home({ session }) {
 
     // find last Time In log from logs array
     const lastTimeIn = logs.find(log => log.type === "IN")
-    const savedTimeIn = lastTimeIn ? new Date(lastTimeIn.created_at) : new Date(activeTimeIn)
+    const savedTimeIn = lastTimeIn ? new Date(lastTimeIn.time) : new Date(activeTimeIn)
     const hours = ((now - savedTimeIn) / (1000 * 60 * 60)).toFixed(2)
 
     await supabase
