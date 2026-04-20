@@ -69,7 +69,15 @@ function Home({ session }) {
     if (!activeTimeIn) return
 
     const now = new Date()
-    const savedTimeIn = new Date(activeTimeIn) // from active_sessions, accurate ISO timestamp
+    const savedTimeIn = new Date(activeTimeIn)
+
+    if (isNaN(savedTimeIn)) {
+      showAlert("Session error — please time in again.")
+      setActiveTimeIn(null)
+      await supabase.from('active_sessions').delete().eq('user_id', user.id)
+      return
+    }
+
     const hours = ((now - savedTimeIn) / (1000 * 60 * 60)).toFixed(2)
 
     await supabase
