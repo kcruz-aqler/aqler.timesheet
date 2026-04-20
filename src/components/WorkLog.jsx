@@ -16,6 +16,9 @@ function WorkLog({ logs }) {
           const duration = parseFloat(log.duration) || 0
           const durationInMinutes = Math.round(duration * 60)
           const isIncomplete = duration < 9
+          const displayTime = duration < 1 
+            ? `${durationInMinutes <= 1 ? "minute" : "minutes"}`
+            : `${duration <= 1 ? "hour" : "hours"}`
 
           // cleaner formatting
           const formattedHours =
@@ -55,8 +58,8 @@ function WorkLog({ logs }) {
                       ? durationInMinutes
                       : formattedHours}
 
-                    <span className="text-sm ml-1 text-slate-400 font-medium">
-                      {duration < 1 ? "mins" : "hrs"}
+                    <span className="text-xl ml-1 text-slate-400 font-medium">
+                      {displayTime}
                     </span>
                   </p>
 
