@@ -66,7 +66,10 @@ function Home({ session }) {
   }
 
   const timeOut = async () => {
-    if (!activeTimeIn) return
+    if (!activeTimeIn) {
+      showAlert("You are not currently timed in!")
+      return
+    }
 
     const now = new Date()
     const savedTimeIn = new Date(activeTimeIn)
@@ -94,7 +97,7 @@ function Home({ session }) {
         type: "OUT",
         time: now.toLocaleTimeString(),
         date: now.toLocaleDateString(),
-        duration: `${hours} hrs`
+        duration: `${hours}`
       })
       .select()
     if (!error) setLogs(prev => [data[0], ...prev])
