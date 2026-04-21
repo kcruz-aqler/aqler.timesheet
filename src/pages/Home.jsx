@@ -11,15 +11,18 @@ function Home({ session }) {
   const [activeTimeIn, setActiveTimeIn] = useState(null)
   const [alertMessage, setAlertMessage] = useState("")
   const timerRef = useRef(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
+      setIsLoading(true)
       // fetch logs
       const { data: logsData } = await supabase
         .from('logs')
         .select('*')
         .eq('user_id', user.id)
         .order('created_at', { ascending: false })
+
       if (logsData) setLogs(logsData)
 
       // fetch active session
@@ -28,7 +31,11 @@ function Home({ session }) {
         .select('*')
         .eq('user_id', user.id)
         .single()
-      if (sessionData) setActiveTimeIn(new Date(sessionData.time_in))
+      
+      const timeInValue = sessionData ? new Date(sessionData.time_in) : null
+      setActiveTimeIn(timeInValue)
+
+      setIsLoading(false)
     }
     fetchData()
   }, [user.id])
@@ -40,7 +47,8 @@ function Home({ session }) {
   }
 
   const timeIn = async () => {
-    if (activeTimeIn) {
+
+    if (isLoading || activeTimeIn) {
       showAlert("You are already timed in!")
       return
     }
@@ -122,7 +130,7 @@ function Home({ session }) {
         <h1 className="text-4xl font-bold mb-6">Welcome back, {user.user_metadata?.full_name.split(' ')[0]}!</h1>
         <p className="text-lg text-slate-300 mb-8">Here's a quick overview of your timesheet activities.</p>
         <AlertMessage message={alertMessage} />
-        <TimeButtons onTimeIn={timeIn} onTimeOut={timeOut} onRequestOvertime={requestOvertime} onLeaveRequest={requestLeave} activeTimeIn={activeTimeIn} />
+        <TimeButtons isLoading={isLoading}onTimeIn={timeIn} onTimeOut={timeOut} onRequestOvertime={requestOvertime} onLeaveRequest={requestLeave} activeTimeIn={activeTimeIn} />
         <WorkLog logs={logs} />
       </div>
     </div>
