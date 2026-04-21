@@ -70,7 +70,7 @@ function Register() {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
-              placeholder="Kevin Almert"
+              placeholder="Juan dela Cruz"
             />
           </div>
 
@@ -79,7 +79,7 @@ function Register() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              onChange={(e) => setEmail(e.target.value)}  
               className="w-full bg-slate-800 border border-slate-700 rounded-lg px-4 py-2 text-white text-sm focus:outline-none focus:border-blue-500"
               placeholder="you@example.com"
             />
