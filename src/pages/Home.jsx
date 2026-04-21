@@ -104,7 +104,11 @@ function Home({ session }) {
   }
 
   const requestOvertime = () => {
-    showAlert("Overtime request submitted! - Not functional yet :)")
+    showAlert("Under development :)")
+  }
+
+  const requestLeave = () => {
+    showAlert("Not functional yet :)")
   }
 
   const handleSignOut = async () => {
@@ -118,7 +122,7 @@ function Home({ session }) {
         <h1 className="text-4xl font-bold mb-6">Welcome back, {user.user_metadata?.full_name.split(' ')[0]}!</h1>
         <p className="text-lg text-slate-300 mb-8">Here's a quick overview of your timesheet activities.</p>
         <AlertMessage message={alertMessage} />
-        <TimeButtons onTimeIn={timeIn} onTimeOut={timeOut} onRequestOvertime={requestOvertime} activeTimeIn={activeTimeIn} />
+        <TimeButtons onTimeIn={timeIn} onTimeOut={timeOut} onRequestOvertime={requestOvertime} onLeaveRequest={requestLeave} activeTimeIn={activeTimeIn} />
         <WorkLog logs={logs} />
       </div>
     </div>
