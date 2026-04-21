@@ -5,6 +5,14 @@ function WorkLog({ logs }) {
 
   const visibleLogs = logs.slice(0, limit)
 
+  const formatDuration = (duration) => {
+    const totalMinutes = Math.round(duration * 60)
+    const hours = Math.floor(totalMinutes / 60)
+    const minutes = totalMinutes % 60
+
+    return `${hours > 0 ? `${hours}h ` : ""}${minutes}m`
+  }
+
   return (
     <div className="max-w-5xl mx-auto px-6 pb-16">
       <h2 className="text-xl font-semibold mb-4 text-white">
@@ -13,16 +21,10 @@ function WorkLog({ logs }) {
 
       <div className="space-y-3">
         {visibleLogs.map((log, index) => {
-          const duration = parseFloat(log.duration) || 0
-          const durationInMinutes = Math.round(duration * 60)
-          const isIncomplete = duration < 9
-          const displayTime = duration < 1 
-            ? `${durationInMinutes <= 1 ? "minute" : "minutes"}`
-            : `${duration <= 1 ? "hour" : "hours"}`
 
-          // cleaner formatting
-          const formattedHours =
-            duration % 1 === 0 ? duration : duration.toFixed(2)
+          const duration = parseFloat(log.duration) || 0
+          const totalMinutes = Math.round(duration * 60)
+          const isIncomplete = log.type === "OUT" && totalMinutes < 9 * 60
 
           return (
             <div
@@ -54,15 +56,8 @@ function WorkLog({ logs }) {
                         : "text-green-400"
                     }`}
                   >
-                    {duration < 1
-                      ? durationInMinutes
-                      : formattedHours}
-
-                    <span className="text-xl ml-1 text-slate-400 font-medium">
-                      {displayTime}
-                    </span>
+                    {formatDuration(duration)}
                   </p>
-
                   <p className="text-xs text-slate-500 font-medium">
                     {isIncomplete ? "Incomplete" : "Complete"}
                   </p>
