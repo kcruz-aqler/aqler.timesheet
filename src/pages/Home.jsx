@@ -115,18 +115,20 @@ function Home({ session }) {
     isProcessingRef.current = true
 
     const savedSession = activeSession
+
     setActiveSession(null)
     setActiveTimeIn(null)
 
     const now = new Date()
     const savedTimeIn = new Date(savedSession.time_in)
     const hours = ((now - savedTimeIn) / (1000 * 60 * 60)).toFixed(2)
+    showAlert("Timed out at " + now.toLocaleTimeString() + ` (Duration: ${hours} hours)`)
 
     const { error, data: updatedData } = await supabase
       .from('active_sessions')
       .update({ time_out: now.toISOString() })
       .eq('id', savedSession.id)
-      .is('time_out', null)  // ← only succeeds if not already timed out
+      .is('time_out', null)  
       .select()
 
     if (error || !updatedData || updatedData.length === 0) {
@@ -148,7 +150,7 @@ function Home({ session }) {
 
     if (logData) setLogs(prev => [logData[0], ...prev])
 
-    isProcessingRef.current = false
+    isProcessingRef.current = false 
   }
 
 
