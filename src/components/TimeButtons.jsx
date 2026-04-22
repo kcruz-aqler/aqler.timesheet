@@ -1,13 +1,13 @@
-function TimeButtons({ onTimeIn, onTimeOut, onRequestOvertime, onLeaveRequest, activeTimeIn }) {
+function TimeButtons({ onTimeIn, onTimeOut, onRequestOvertime, onLeaveRequest, activeTimeIn, isLoading }) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
 
       {/* TIME IN */}
       <button
         onClick={onTimeIn}
-        disabled={!!activeTimeIn}
+        disabled={isLoading || !!activeTimeIn}
         className={`${
-          activeTimeIn
+          isLoading || activeTimeIn
             ? "bg-slate-700 cursor-not-allowed p-6 rounded-2xl shadow-lg text-left border border-slate-800/20"
             : "bg-teal-600/80 hover:bg-teal-500/80 transition p-6 rounded-2xl shadow-lg text-left border border-teal-400/20"
         }`}
@@ -24,7 +24,12 @@ function TimeButtons({ onTimeIn, onTimeOut, onRequestOvertime, onLeaveRequest, a
       {/* TIME OUT */}
       <button
         onClick={onTimeOut}
-        className="bg-amber-600/80 hover:bg-amber-500/80 transition p-6 rounded-2xl shadow-lg text-left border border-amber-400/20"
+        disabled={isLoading || !activeTimeIn}
+        className={`${
+          isLoading || !activeTimeIn
+            ? "bg-slate-700 cursor-not-allowed p-6 rounded-2xl shadow-lg text-left border border-slate-800/20"
+            : "bg-amber-600/80 hover:bg-amber-500/80 transition p-6 rounded-2xl shadow-lg text-left border border-amber-400/20"
+        }`}
       >
         <div className="flex items-center gap-2">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="#fbbf24">

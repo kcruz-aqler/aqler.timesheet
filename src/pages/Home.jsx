@@ -15,6 +15,7 @@ function Home({ session }) {
   const [alertMessage, setAlertMessage] = useState("")
   const timerRef = useRef(null)
   const [isLoading, setIsLoading] = useState(true)
+  const isProcessingRef = useRef(false)
 
   // ---------------- FETCH DATA ----------------
   useEffect(() => {
@@ -62,7 +63,7 @@ function Home({ session }) {
     }, 5000)
   }
 
-  // ---------------- TIME IN ----------------
+  // Time In Handler
   const timeIn = async () => {
     if (isLoading || activeSession) {
       showAlert("You are already timed in!")
@@ -83,7 +84,7 @@ function Home({ session }) {
       .select()
 
     if (error) {
-      showAlert("Failed to time in (maybe already active session)")
+      showAlert("Failed to time in - you already have an active session. Kindly refresh the page.")
       setActiveTimeIn(null)
       return
     }
@@ -106,33 +107,34 @@ function Home({ session }) {
 
   // ---------------- TIME OUT ----------------
   const timeOut = async () => {
-    if (!activeSession) {
+    if (!activeSession || isProcessingRef.current) {
       showAlert("You are not currently timed in!")
       return
     }
 
-    const now = new Date()
+    isProcessingRef.current = true
 
-    const savedTimeIn = new Date(activeSession.time_in)
-    const hours = ((now - savedTimeIn) / (1000 * 60 * 60)).toFixed(2)
-
-    // update session (NOT delete)
-    const { error } = await supabase
-      .from('active_sessions')
-      .update({
-        time_out: now.toISOString()
-      })
-      .eq('id', activeSession.id)
-
-    if (error) {
-      showAlert("Failed to time out")
-      return
-    }
-
+    const savedSession = activeSession
     setActiveSession(null)
     setActiveTimeIn(null)
 
-    // log OUT
+    const now = new Date()
+    const savedTimeIn = new Date(savedSession.time_in)
+    const hours = ((now - savedTimeIn) / (1000 * 60 * 60)).toFixed(2)
+
+    const { error, data: updatedData } = await supabase
+      .from('active_sessions')
+      .update({ time_out: now.toISOString() })
+      .eq('id', savedSession.id)
+      .is('time_out', null)  // ← only succeeds if not already timed out
+      .select()
+
+    if (error || !updatedData || updatedData.length === 0) {
+      showAlert("Session already ended. Please refresh.")
+      isProcessingRef.current = false
+      return
+    }
+
     const { data: logData } = await supabase
       .from('logs')
       .insert({
@@ -145,9 +147,11 @@ function Home({ session }) {
       .select()
 
     if (logData) setLogs(prev => [logData[0], ...prev])
+
+    isProcessingRef.current = false
   }
 
-  // ---------------- OTHER ACTIONS ----------------
+
   const requestOvertime = () => {
     showAlert("Under development :)")
   }
@@ -160,7 +164,7 @@ function Home({ session }) {
     await supabase.auth.signOut()
   }
 
-  // ---------------- UI ----------------
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
       <Navbar user={user} onSignOut={handleSignOut} />
